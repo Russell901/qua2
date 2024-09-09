@@ -1,11 +1,11 @@
-'use client'
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { useParams } from 'next/navigation';
-import { hostels } from '@/data/dummyData';
+"use client";
+import React from "react";
+import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { hostels } from "@/data/dummyData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import AvailabilityBadge from '@/components/dashboard/AvailabilityBadge';
-
+import AvailabilityBadge from "@/components/dashboard/AvailabilityBadge";
+import { Button } from "@/components/ui/button";
 
 export default function HostelDetailPage() {
   const router = useRouter();
@@ -25,29 +25,28 @@ export default function HostelDetailPage() {
 
   return (
     <div className="container mx-auto py-8">
-      <button
+      <Button
         onClick={handleBackClick}
         className="mb-4 text-blue-500 hover:text-blue-700"
       >
         &larr; Back to Hostels
-      </button>
+      </Button>
       <h1 className="text-3xl font-bold mb-8">{hostel.name}</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-2">
+        <Card className="md:col-span-2 bg-white/10 border-none">
           <CardHeader>
-            <CardTitle>About this Hostel</CardTitle>
+            <CardTitle className="text-gray-200">About this Hostel</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{hostel.description}</p>
+            <p className="text-gray-200">{hostel.description}</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className='flex justify-between'>
+        <Card className="bg-white/10 border-none text-gray-200">
+          <CardHeader className="flex flex-row justify-between">
             <CardTitle>Occupancy</CardTitle>
-            <AvailabilityBadge availability={hostel.availability}/>
+            <AvailabilityBadge availability={hostel.availability} />
           </CardHeader>
           <CardContent>
-            
             <p className="text-sm text-muted-foreground mb-2">
               {hostel.currentOccupancy} / {hostel.capacity} beds occupied
             </p>
@@ -55,7 +54,7 @@ export default function HostelDetailPage() {
         </Card>
 
         {hostel.amenities?.length > 0 && (
-          <Card>
+          <Card className='bg-white/10 border-none text-gray-200'>
             <CardHeader>
               <CardTitle>Amenities</CardTitle>
             </CardHeader>
@@ -70,7 +69,7 @@ export default function HostelDetailPage() {
         )}
 
         {hostel.nearbyAttractions?.length > 0 && (
-          <Card>
+          <Card className='bg-white/10 border-none text-gray-200'>
             <CardHeader>
               <CardTitle>Nearby Attractions</CardTitle>
             </CardHeader>
