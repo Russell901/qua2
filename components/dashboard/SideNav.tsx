@@ -52,13 +52,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
             Guests
           </Link>
         </Button>
-        <Button
-          variant="ghost"
-          className="w-full justify-start"
-          onClick={() => console.log("Finances clicked")}
-        >
-          <DollarSign className="mr-2 h-4 w-4" />
-          Finances
+        <Button asChild variant="ghost" className="w-full justify-start">
+          <Link href={"/dashboard/finances"}>
+            <DollarSign className="mr-2 h-4 w-4" />
+            Finances
+          </Link>
         </Button>
         <Button
           variant="ghost"

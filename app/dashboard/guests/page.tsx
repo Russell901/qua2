@@ -21,13 +21,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Search, MoreHorizontal, Plus } from 'lucide-react';
+import { recentBookings } from '@/data/dummyData';
 
 // Types
 interface Guest {
   id: number;
   name: string;
   hostel: string;
-  status: 'paid' | 'partial' | 'unpaid';
+  status: string;
 }
 
 interface PaginationProps {
@@ -41,13 +42,6 @@ interface GuestRowProps {
   guest: Guest;
 }
 
-// This would typically come from your backend
-const initialGuests: Guest[] = [
-  { id: 1, name: "John Doe", hostel: "Backpackers Paradise", status: "paid" },
-  { id: 2, name: "Jane Smith", hostel: "Urban Oasis", status: "partial" },
-  { id: 3, name: "Mike Johnson", hostel: "Sunshine Hostels", status: "unpaid" },
-  // Add more guest data as needed
-];
 
 const statusColors: { [key in Guest['status']]: string } = {
   paid: "bg-green-100 text-green-800",
@@ -81,7 +75,7 @@ const Pagination: React.FC<PaginationProps> = ({ totalItems, itemsPerPage, curre
 // Guest Row Component
 const GuestRow: React.FC<GuestRowProps> = ({ guest }) => (
   <TableRow key={guest.id}>
-    <TableCell>
+    <TableCell >
       <Link href={`/dashboard/guests/${guest.id}`} className="hover:underline">
         {guest.name}
       </Link>
@@ -126,7 +120,7 @@ const ActionsMenu: React.FC = () => (
 const GuestsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [guests] = useState<Guest[]>(initialGuests);
+  const [guests] = useState<Guest[]>(recentBookings);
 
   const itemsPerPage = 10;
 

@@ -14,6 +14,7 @@ export const recentBookings = [
     hostel: "Backpackers Paradise",
     checkIn: "2023-06-15",
     nights: 3,
+    status: "paid",
   },
   {
     id: 2,
@@ -21,6 +22,7 @@ export const recentBookings = [
     hostel: "City Center Hostel",
     checkIn: "2023-06-16",
     nights: 2,
+    status: "partial",
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ export const recentBookings = [
     hostel: "Beachfront Bunk",
     checkIn: "2023-06-17",
     nights: 5,
+    status: "unpaid",
   },
 ];
 
