@@ -104,7 +104,7 @@ export default function GuestDetailsPage() {
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
+        <Card className='bg-white/5 border-none text-foreground'>
           <CardHeader>
             <CardTitle>Personal Information</CardTitle>
           </CardHeader>
@@ -122,7 +122,7 @@ export default function GuestDetailsPage() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className='bg-white/5 border-none text-foreground'>
           <CardHeader>
             <CardTitle>Booking Details</CardTitle>
           </CardHeader>
@@ -143,7 +143,7 @@ export default function GuestDetailsPage() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className='bg-white/5 border-none text-foreground'>
           <CardHeader>
             <CardTitle>Payment Status</CardTitle>
           </CardHeader>
@@ -167,7 +167,7 @@ export default function GuestDetailsPage() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className='bg-white/5 border-none text-foreground'>
           <CardHeader>
             <CardTitle>Actions</CardTitle>
           </CardHeader>

@@ -16,15 +16,15 @@
   const getAvailabilityColor = (availability: string) => {
     switch (availability.toLowerCase()) {
       case 'high':
-        return 'bg-green-500';
+        return 'bg-green-500/30';
       case 'medium':
-        return 'bg-yellow-500';
+        return 'bg-yellow-700/30';
       case 'low':
-        return 'bg-orange-500';
+        return 'bg-orange-600/30';
       case 'full':
-        return 'bg-red-500';
+        return 'bg-red-500/30';
       default:
-        return 'bg-gray-500';
+        return 'bg-gray-500/30';
     }
   };
 
@@ -43,15 +43,15 @@
 
     return (
       <Card
-        className="w-full bg-white/10  border-none cursor-pointer hover:bg-white/20 transition-colors"
+        className="w-full  border-none cursor-pointer hover:bg-white/10 transition-colors"
         onClick={handleCardClick} // Make the card clickable
       >
         <CardHeader>
-          <CardTitle className="text-gray-100">{name}</CardTitle> {/* Improved visibility */}
+          <CardTitle className="text-foreground">{name}</CardTitle> {/* Improved visibility */}
         </CardHeader>
         <CardContent>
           <div className="mt-4">
-            <Badge className={`${getAvailabilityColor(availability)} text-white mb-2`}>
+            <Badge className={`${getAvailabilityColor(availability)} text-foreground mb-2`}>
               {availability}
             </Badge>
             <OccupancyBar

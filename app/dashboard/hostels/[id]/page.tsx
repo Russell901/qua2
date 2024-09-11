@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 export default function HostelDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const { id } = params;
+  const id = params?.id;
 
   // Find the hostel by id
   const hostel = hostels.find((hostel) => hostel.id === id);
@@ -27,21 +27,21 @@ export default function HostelDetailPage() {
     <div className="container mx-auto py-8">
       <Button
         onClick={handleBackClick}
-        className="mb-4 text-blue-500 hover:text-blue-700"
+        className="mb-4 text-foreground"
       >
         &larr; Back to Hostels
       </Button>
       <h1 className="text-3xl font-bold mb-8">{hostel.name}</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-2 bg-white/10 border-none">
+        <Card className="md:col-span-2  border-none">
           <CardHeader>
-            <CardTitle className="text-gray-200">About this Hostel</CardTitle>
+            <CardTitle className="text-foreground">About this Hostel</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-200">{hostel.description}</p>
+            <p className="text-foreground">{hostel.description}</p>
           </CardContent>
         </Card>
-        <Card className="bg-white/10 border-none text-gray-200">
+        <Card className="border-none text-foreground">
           <CardHeader className="flex flex-row justify-between">
             <CardTitle>Occupancy</CardTitle>
             <AvailabilityBadge availability={hostel.availability} />
@@ -54,7 +54,7 @@ export default function HostelDetailPage() {
         </Card>
 
         {hostel.amenities?.length > 0 && (
-          <Card className='bg-white/10 border-none text-gray-200'>
+          <Card className='border-none text-foreground'>
             <CardHeader>
               <CardTitle>Amenities</CardTitle>
             </CardHeader>
@@ -69,7 +69,7 @@ export default function HostelDetailPage() {
         )}
 
         {hostel.nearbyAttractions?.length > 0 && (
-          <Card className='bg-white/10 border-none text-gray-200'>
+          <Card className='border-none text-foreground'>
             <CardHeader>
               <CardTitle>Nearby Attractions</CardTitle>
             </CardHeader>
