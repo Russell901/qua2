@@ -1,6 +1,5 @@
 import { v } from 'convex/values';
 import { query, mutation } from './_generated/server';
-import { Id } from './_generated/dataModel';
 
 export const list = query({
   args: {},
@@ -8,25 +7,29 @@ export const list = query({
     const guests = await ctx.db.query('guests').collect();
     return guests.map(guest => ({
       _id: guest._id,
-      name: guest.name,
-      hostel: guest.hostel,
-      status: guest.status,
+      firstName: guest.firstName,
+      lastName: guest.lastName,
+      name: `${guest.firstName} ${guest.lastName}`,
+      email: guest.email,
+      phoneNumber: guest.phoneNumber,
+      gender: guest.gender,
     }));
   },
 });
 
 export const addGuest = mutation({
-  args: { name: v.string(), hostel: v.string(), status: v.string() },
+  args: {
+    firstName: v.string(),
+    lastName: v.string(),
+    email: v.string(),
+    phoneNumber: v.string(),
+    gender: v.string(),
+  },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("guests", args);
+    const guestId = await ctx.db.insert("guests", args);
+    return guestId;
   },
 });
-
-export const updateGuest = mutation(
-  async ({ db }, { id, status }: { id: Id<"guests">, status: string }) => {
-    await db.patch(id, { status });
-  }
-);
 
 export const deleteGuest = mutation({
   args: { id: v.id('guests') },
@@ -35,7 +38,7 @@ export const deleteGuest = mutation({
   },
 });
 
-export const deleteGuestAndUpdateOccupancy = mutation({
+export const deleteGuestAndUpdateBookings = mutation({
   args: { guestId: v.id("guests") },
   handler: async (ctx, args) => {
     const { guestId } = args;
@@ -46,25 +49,34 @@ export const deleteGuestAndUpdateOccupancy = mutation({
       throw new Error("Guest not found");
     }
 
-    // Find the hostel
-    const hostel = await ctx.db
-      .query("hostels")
-      .filter((q) => q.eq(q.field("name"), guest.hostel))
-      .first();
+    // Find all bookings associated with this guest
+    const bookings = await ctx.db
+      .query("bookings")
+      .filter((q) => q.eq(q.field("guestId"), guestId))
+      .collect();
 
-    if (!hostel) {
-      throw new Error(`Hostel "${guest.hostel}" not found`);
+    // Delete all associated bookings
+    for (const booking of bookings) {
+      await ctx.db.delete(booking._id);
     }
-
-    // Calculate the new occupancy
-    const newOccupancy = Math.max(0, (hostel.currentOccupancy || 0) - 1);
-
-    // Update the hostel's occupancy
-    await ctx.db.patch(hostel._id, { currentOccupancy: newOccupancy });
 
     // Delete the guest
     await ctx.db.delete(guestId);
 
-    return { success: true, newOccupancy };
+    return { success: true, deletedBookings: bookings.length };
+  },
+});
+
+export const getGuestById = query({
+  args: { id: v.id("guests") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
+  },
+});
+
+export const getGuest = query({
+  args: { id: v.id("guests") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
   },
 });

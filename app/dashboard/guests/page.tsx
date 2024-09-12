@@ -26,13 +26,14 @@ import { toast } from "@/hooks/use-toast";
 
 import { Id } from "@/convex/_generated/dataModel";
 
-// Types
+// Update the Guest interface
 interface Guest {
-  _id?: Id<"guests">; // Make _id optional
-  name: string;
-  hostel: string;
-  status: "unpaid" | "partial" | "paid";
-  depositPaid?: boolean;
+  _id?: Id<"guests">;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  gender: string;
 }
 
 const GuestsPage: React.FC = () => {
@@ -40,39 +41,33 @@ const GuestsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isAddingGuestFormOpen, setIsAddingGuestFormOpen] = useState(false);
 
-  // Fetch guests and hostels from Convex
+  // Fetch guests from Convex
   const guests = useQuery(api.guests.list) || [];
-  const hostels = useQuery(api.hostels.list) || [];
 
   const itemsPerPage = 10;
 
-  // Filtering guests based on the search term
+  // Update the filtering logic
   const filteredGuests = guests.filter(
     (guest) =>
-      guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      guest.hostel.toLowerCase().includes(searchTerm.toLowerCase())
+      `${guest.firstName} ${guest.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const addGuest = useMutation(api.guests.addGuest);
-  const updateHostelOccupancy = useMutation(api.hostels.updateOccupancy);
 
-  const handleAddGuest = async (guest: Omit<Guest, '_id'>) => {
+  const handleAddGuest = async (guest: Guest) => {
     try {
-      console.log("Adding guest:", guest);
-      await addGuest(guest);
-      console.log("Guest added successfully");
-
-      console.log("Updating occupancy for:", guest.hostel);
-      const result = await updateHostelOccupancy({ hostelName: guest.hostel, increment: 1 });
-      console.log("Occupancy update result:", result);
+      console.log("Attempting to add guest:", guest); // Log the guest object
+      const result = await addGuest(guest);
+      console.log("Add guest result:", result); // Log the result from Convex
 
       setIsAddingGuestFormOpen(false);
       toast({
         title: "Guest added successfully",
-        description: `${guest.name} has been added to ${guest.hostel}. New occupancy: ${result.newOccupancy}`,
+        description: `${guest.firstName} ${guest.lastName} has been added to the system.`,
       });
     } catch (error) {
-      console.error("Error details:", error);
+      console.error("Error adding guest:", error);
       toast({
         title: "Error adding guest",
         description: "An error occurred while adding the guest. Please try again.",
@@ -81,7 +76,7 @@ const GuestsPage: React.FC = () => {
     }
   };
 
-  const deleteGuestAndUpdateOccupancy = useMutation(api.guests.deleteGuestAndUpdateOccupancy);
+  const deleteGuest = useMutation(api.guests.deleteGuest);
 
   const handleGuestDeleted = async (guestId: Id<"guests">) => {
     try {
@@ -90,11 +85,11 @@ const GuestsPage: React.FC = () => {
         throw new Error("Guest not found");
       }
 
-      const result = await deleteGuestAndUpdateOccupancy({ guestId });
+      await deleteGuest({ id: guestId });
 
       toast({
         title: "Guest deleted successfully",
-        description: `${guestToDelete.name} has been removed from ${guestToDelete.hostel}. New occupancy: ${result.newOccupancy}`,
+        description: `${guestToDelete.firstName} ${guestToDelete.lastName} has been removed from the system.`,
       });
     } catch (error) {
       console.error("Error deleting guest:", error);
@@ -138,7 +133,6 @@ const GuestsPage: React.FC = () => {
           isOpen={isAddingGuestFormOpen}
           onClose={() => setIsAddingGuestFormOpen(false)}
           onSubmit={handleAddGuest}
-          hostels={hostels.map((hostel) => hostel.name)}
         />
       </div>
       <div className="rounded-md border">
@@ -146,15 +140,19 @@ const GuestsPage: React.FC = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Hostel</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Deposit Paid</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone Number</TableHead>
+              <TableHead>Gender</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {currentGuests.map((guest) => (
-              <GuestRow key={guest._id} guest={guest} onGuestDeleted={() => handleGuestDeleted(guest._id)} />
+              <GuestRow 
+                key={guest._id} 
+                guest={guest}
+                onGuestDeleted={() => handleGuestDeleted(guest._id)} 
+              />
             ))}
           </TableBody>
         </Table>

@@ -13,9 +13,11 @@ export default defineSchema({
     name: v.string(),
   }),
   guests: defineTable({
-    name: v.string(),
-    hostel: v.string(),
-    status: v.string(),
+    firstName: v.string(),
+    lastName: v.string(),
+    email: v.string(),
+    phoneNumber: v.string(),
+    gender: v.string(),
   }),
   hostels: defineTable({
     name: v.string(),
@@ -28,6 +30,7 @@ export default defineSchema({
       v.literal("medium"),
       v.literal("high")
     ),
+    pricePerNight: v.number(), // Add this line
   }),
   bookings: defineTable({
     guestId: v.id("guests"),

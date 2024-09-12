@@ -1,5 +1,3 @@
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
@@ -29,32 +27,31 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface AddGuestsFormDialogProps {
-  isOpen: (boolean);
+interface AddGuestFormDialogProps {
+  isOpen: boolean;
   onClose: () => void;
   onSubmit: (guest: Guest) => Promise<void>;
-  hostels: string[];
 }
 
-const AddGuestsFormDialog: React.FC<AddGuestsFormDialogProps> = ({
-  hostels,
+const AddGuestsFormDialog: React.FC<AddGuestFormDialogProps> = ({
   isOpen,
   onClose,
+  onSubmit,
 }) => {
-  const addGuest = useMutation(api.guests.addGuest);
-
   const form = useForm<Guest>({
     resolver: zodResolver(guestSchema),
     defaultValues: {
-      name: "",
-      hostel: "",
-      status: "unpaid",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      gender: "male",
     },
   });
 
-  async function onSubmit(data: Guest) {
+  async function handleSubmit(data: Guest) {
     try {
-      await addGuest({ ...data });
+      await onSubmit(data);
       form.reset();
       onClose();
       toast({ title: "Success", description: "New guest added successfully." });
@@ -67,9 +64,11 @@ const AddGuestsFormDialog: React.FC<AddGuestsFormDialogProps> = ({
     }
   }
 
+  console.log("Form is valid:", form.formState.isValid);
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>      
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px] max-w-[90vw] bg-card">
         <DialogHeader>
           <DialogTitle>Add New Guest</DialogTitle>
           <DialogDescription>
@@ -77,15 +76,43 @@ const AddGuestsFormDialog: React.FC<AddGuestsFormDialogProps> = ({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="name"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} type="email" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -93,77 +120,49 @@ const AddGuestsFormDialog: React.FC<AddGuestsFormDialogProps> = ({
             />
             <FormField
               control={form.control}
-              name="hostel"
+              name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hostel</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a hostel" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {hostels.map((hostel) => (
-                        <SelectItem key={hostel} value={hostel}>
-                          {hostel}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="tel" />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="status"
+              name="gender"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
+                  <FormLabel>Gender</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a status" />
+                        <SelectValue placeholder="Select a gender" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="unpaid">Unpaid</SelectItem>
-                      <SelectItem value="partial">Partial</SelectItem>
-                      <SelectItem value="paid">Paid</SelectItem>
+                      <SelectItem key="male" value="male">
+                        Male
+                      </SelectItem>
+                      <SelectItem key="female" value="female">
+                        Female
+                      </SelectItem>
+                      <SelectItem key="other" value="other">
+                        Other
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {/*<FormField
-              control={form.control}
-              name="depositPaid"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Deposit Paid</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="checkbox"
-                      onChange={field.onChange}
-                      onBlur={field.onBlur}
-                      checked={field.value}
-                      name={field.name}
-                      ref={field.ref}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />*/}
-            <Button type="submit">Add Guest</Button>
+            <Button type="submit" className="w-full">Add Guest</Button>
           </form>
         </Form>
       </DialogContent>

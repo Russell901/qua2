@@ -75,7 +75,8 @@ export default function FinancesPage() {
     },
     { totalIncome: 0, totalExpenses: 0 }
   );
-  const netIncome = financialSummary.totalIncome - financialSummary.totalExpenses;
+  const netIncome =
+    financialSummary.totalIncome - financialSummary.totalExpenses;
 
   return (
     <div className="container mx-auto py-10">
@@ -87,17 +88,22 @@ export default function FinancesPage() {
         netIncome={netIncome}
       />
 
-      <TransactionActions
-        filter={filter}
-        setFilter={setFilter}
-        isAddingCategory={isAddingCategory}
-        setIsAddingCategory={setIsAddingCategory}
-        newCategory={newCategory}
-        setNewCategory={setNewCategory}
-        handleAddCategory={handleAddCategory}
-        categories={categories.map((category) => category.name)}
-        onAddTransactionClick={() => setIsTransactionFormOpen(true)}
-      />
+      <div className="flex flex-col sm:flex-row w-full justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <h1 className="text-2xl font-bold mb-4 sm:mb-0">Transactions</h1>
+        <div className="w-full sm:w-auto">
+          <TransactionActions
+            filter={filter}
+            setFilter={setFilter}
+            isAddingCategory={isAddingCategory}
+            setIsAddingCategory={setIsAddingCategory}
+            newCategory={newCategory}
+            setNewCategory={setNewCategory}
+            handleAddCategory={handleAddCategory}
+            categories={categories.map((category) => category.name)}
+            onAddTransactionClick={() => setIsTransactionFormOpen(true)}
+          />
+        </div>
+      </div>
 
       <TransactionFormDialog
         isOpen={isTransactionFormOpen}

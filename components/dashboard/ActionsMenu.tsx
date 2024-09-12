@@ -12,11 +12,10 @@ import { MoreHorizontal } from "lucide-react";
 
 interface ActionsMenuProps {
   onViewDetails: () => void;
-  onUpdateStatus: () => void;
   onDeleteGuest: () => void;
 }
 
-const ActionsMenu: React.FC<ActionsMenuProps> = memo(({ onViewDetails, onUpdateStatus, onDeleteGuest }) => (
+const ActionsMenu: React.FC<ActionsMenuProps> = memo(({ onViewDetails, onDeleteGuest }) => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <Button variant="ghost" className="h-8 w-8 p-0">
@@ -27,7 +26,6 @@ const ActionsMenu: React.FC<ActionsMenuProps> = memo(({ onViewDetails, onUpdateS
     <DropdownMenuContent align="end">
       <DropdownMenuLabel>Actions</DropdownMenuLabel>
       <DropdownMenuItem onClick={onViewDetails}>View details</DropdownMenuItem>
-      <DropdownMenuItem onClick={onUpdateStatus}>Update status</DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem onClick={onDeleteGuest}>Delete guest</DropdownMenuItem>
     </DropdownMenuContent>

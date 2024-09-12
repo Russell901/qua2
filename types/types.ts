@@ -24,9 +24,11 @@ export const transactionSchema = z.object({
 });
 
 export const guestSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  hostel: z.string().min(1, "Hostel is required"),
-  status: z.enum(["unpaid", "partial", "paid"]),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  phoneNumber: z.string().min(1, "Phone number is required"),
+  gender: z.enum(["male", "female"]),
 });
 
 export type Guest = z.infer<typeof guestSchema>;

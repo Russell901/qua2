@@ -1,80 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Mail, Phone, MapPin, Calendar, CreditCard, Edit, Trash2 } from 'lucide-react'
-
-const guests = [
-  { 
-    id: 1, 
-    name: "John Doe", 
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    hostel: "Backpackers Paradise", 
-    room: "Dorm 3, Bed 2",
-    checkIn: "2023-07-01",
-    checkOut: "2023-07-07",
-    status: "paid",
-    amountPaid: 210,
-    totalAmount: 210
-  },
-  { 
-    id: 2, 
-    name: "Jane Smith", 
-    email: "jane.smith@example.com",
-    phone: "+1 (555) 987-6543",
-    hostel: "Urban Oasis", 
-    room: "Private Room 5",
-    checkIn: "2023-07-03",
-    checkOut: "2023-07-10",
-    status: "partial",
-    amountPaid: 150,
-    totalAmount: 280
-  },
-  { 
-    id: 3, 
-    name: "Mike Johnson", 
-    email: "mike.johnson@example.com",
-    phone: "+1 (555) 246-8135",
-    hostel: "Sunshine Hostels", 
-    room: "Dorm 2, Bed 4",
-    checkIn: "2023-07-05",
-    checkOut: "2023-07-12",
-    status: "unpaid",
-    amountPaid: 0,
-    totalAmount: 175
-  },
-]
-
-const statusColors = {
-  paid: "bg-green-100 text-green-800",
-  partial: "bg-yellow-100 text-yellow-800",
-  unpaid: "bg-red-100 text-red-800",
-}
-
-function isValidStatus(status: string): status is keyof typeof statusColors {
-  return status in statusColors
-}
+import { ArrowLeft, Mail, Phone } from 'lucide-react'
+import { useQuery } from 'convex/react'
+import { api } from '@/convex/_generated/api'
+import { Id } from '@/convex/_generated/dataModel'
 
 export default function GuestDetailsPage() {
-  const [mounted, setMounted] = useState(false)
   const params = useParams()
-  const id = params?.id
+  const id = params?.id as Id<"guests">
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return null
-  }
-
-  const guestId = id ? Number(id) : null
-  const guest = guests.find(guest => guest.id === guestId)
+  const guest = useQuery(api.guests.getGuest, { id })
 
   if (!guest) {
     return (
@@ -97,92 +35,28 @@ export default function GuestDetailsPage() {
           Back to Guest List
         </Link>
       </div>
-      <div className="flex justify-between items-center mb-5">
-        <h1 className="text-2xl font-bold">Guest Details</h1>
-        <Button>
-          <Edit className="mr-2 h-4 w-4" /> Edit Guest
-        </Button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className='bg-white/5 border-none text-foreground'>
-          <CardHeader>
-            <CardTitle>Personal Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <p className="text-xl font-semibold">{guest.name}</p>
-              <p className="flex items-center text-gray-600">
-                <Mail className="mr-2 h-4 w-4" />
-                {guest.email}
-              </p>
-              <p className="flex items-center text-gray-600">
-                <Phone className="mr-2 h-4 w-4" />
-                {guest.phone}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className='bg-white/5 border-none text-foreground'>
-          <CardHeader>
-            <CardTitle>Booking Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <p className="flex items-center text-gray-600">
-                <MapPin className="mr-2 h-4 w-4" />
-                {guest.hostel} - {guest.room}
-              </p>
-              <p className="flex items-center text-gray-600">
-                <Calendar className="mr-2 h-4 w-4" />
-                Check-in: {guest.checkIn}
-              </p>
-              <p className="flex items-center text-gray-600">
-                <Calendar className="mr-2 h-4 w-4" />
-                Check-out: {guest.checkOut}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className='bg-white/5 border-none text-foreground'>
-          <CardHeader>
-            <CardTitle>Payment Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {isValidStatus(guest.status) ? (
-                <Badge className={statusColors[guest.status]}>
-                  {guest.status.charAt(0).toUpperCase() + guest.status.slice(1)}
-                </Badge>
-              ) : (
-                <Badge className="bg-gray-100 text-gray-800">Unknown</Badge>
-              )}
-              <p className="flex items-center text-gray-600">
-                <CreditCard className="mr-2 h-4 w-4" />
-                Amount Paid: ${guest.amountPaid}
-              </p>
-              <p className="flex items-center text-gray-600">
-                <CreditCard className="mr-2 h-4 w-4" />
-                Total Amount: ${guest.totalAmount}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className='bg-white/5 border-none text-foreground'>
-          <CardHeader>
-            <CardTitle>Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Button className="w-full">Update Payment Status</Button>
-              <Button className="w-full" variant="outline">Extend Stay</Button>
-              <Button className="w-full" variant="outline">Send Message</Button>
-              <Button className="w-full" variant="destructive">
-                <Trash2 className="mr-2 h-4 w-4" /> Delete Guest
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <h1 className="text-2xl font-bold mb-5">Guest Details</h1>
+      <Card className='bg-white/5 border-none text-foreground'>
+        <CardHeader>
+          <CardTitle>Personal Information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <p className="text-xl font-semibold">{guest.firstName} {guest.lastName}</p>
+            <p className="flex items-center text-gray-600">
+              <Mail className="mr-2 h-4 w-4" />
+              {guest.email}
+            </p>
+            <p className="flex items-center text-gray-600">
+              <Phone className="mr-2 h-4 w-4" />
+              {guest.phoneNumber}
+            </p>
+            <p className="text-gray-600">
+              Gender: {guest.gender}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

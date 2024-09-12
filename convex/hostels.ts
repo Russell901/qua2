@@ -13,6 +13,7 @@ export const list = query({
       description: hostel.description,
       currentOccupancy: hostel.currentOccupancy,
       availability: hostel.availability,
+      pricePerNight: hostel.pricePerNight,
     }));
   },
 });
@@ -25,6 +26,7 @@ export const add = mutation({
     description: v.string(),
     currentOccupancy: v.optional(v.number()),
     availability: v.union(v.literal("full"), v.literal("medium"), v.literal("high")),
+    pricePerNight: v.number(), // Add this line
   },
   handler: async (ctx, args) => {
     const hostelId = await ctx.db.insert("hostels", {
@@ -34,6 +36,7 @@ export const add = mutation({
       description: args.description,
       currentOccupancy: args.currentOccupancy ?? 0,
       availability: args.availability,
+      pricePerNight: args.pricePerNight, // Add this line
     });
     return hostelId;
   },
@@ -95,8 +98,6 @@ export const getAverageOccupancy = query(async (ctx) => {
 });
 
 export const getOccupancyData = query(async (ctx) => {
-  // Implement the logic to fetch occupancy data
-  // Return the data in the format expected by OccupancyChart
   const hostels = await ctx.db.query("hostels").collect();
   return hostels.map(hostel => ({
     name: hostel.name,
@@ -105,9 +106,15 @@ export const getOccupancyData = query(async (ctx) => {
   }));
 });
 
-{/*function getAvailability(occupancy: number, capacity: number): "full" | "medium" | "high" {
-  const occupancyRate = occupancy / capacity;
-  if (occupancyRate >= 1) return "full";
-  if (occupancyRate > 0.5) return "medium";
-  return "high";
-}*/}
+export const getHostelById = query({
+  args: { id: v.id("hostels") },
+  handler: async (ctx, args) => {
+    const hostel = await ctx.db.get(args.id);
+    if (!hostel) {
+      throw new Error("Hostel not found");
+    }
+    return { name: hostel.name };
+  },
+});
+
+

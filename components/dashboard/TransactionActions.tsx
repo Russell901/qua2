@@ -46,9 +46,8 @@ export default function TransactionActions({
   };
 
   return (
-    <div className="flex justify-between items-center mb-4">
-      <h2 className="text-2xl font-bold">Recent Transactions</h2>
-      <div className="space-x-2">
+    <div className="flex items-center align-end mb-4">
+      <div className="  w-1/2 space-x-3 flex flex-row justify-between items-center ">
         <Select value={filter} onValueChange={setFilter}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter transactions" />
