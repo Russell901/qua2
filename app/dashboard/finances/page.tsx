@@ -8,7 +8,7 @@ import FinancialOverview from "@/components/dashboard/FinancialOverview";
 import TransactionActions from "@/components/dashboard/TransactionActions";
 import TransactionTable from "@/components/dashboard/TransactionTable";
 import { Transaction, ErrorMessages } from "@/types/types";
-import TransactionFormDialog from "@/app/components/TransactionFormDialog";
+import TransactionFormDialog from "@/components/dashboard/TransactionFormDialog";
 
 // Define Zod schema for transaction validation
 const transactionSchema = z.object({

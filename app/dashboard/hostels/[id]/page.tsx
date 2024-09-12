@@ -2,21 +2,23 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
-import { hostels } from "@/data/dummyData";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AvailabilityBadge from "@/components/dashboard/AvailabilityBadge";
 import { Button } from "@/components/ui/button";
+import { Id } from "@/convex/_generated/dataModel";
 
 export default function HostelDetailPage() {
   const router = useRouter();
   const params = useParams();
   const id = params?.id;
 
-  // Find the hostel by id
-  const hostel = hostels.find((hostel) => hostel.id === id);
+  // Fetch the hostel by id from Convex
+  const hostel = useQuery(api.hostels.get, { _id: id as Id<"hostels">});
 
-  if (!hostel) {
-    return <p>Hostel not found</p>;
+  if (!hostel || !('name' in hostel)) {
+    return <p>Hostel not found or invalid data</p>;
   }
 
   const handleBackClick = () => {
@@ -53,7 +55,7 @@ export default function HostelDetailPage() {
           </CardContent>
         </Card>
 
-        {hostel.amenities?.length > 0 && (
+        {/* {hostel.amenities?.length > 0 && (
           <Card className='border-none text-foreground'>
             <CardHeader>
               <CardTitle>Amenities</CardTitle>
@@ -68,7 +70,7 @@ export default function HostelDetailPage() {
           </Card>
         )}
 
-        {hostel.nearbyAttractions?.length > 0 && (
+        { /* {hostel.nearbyAttractions?.length > 0 && (
           <Card className='border-none text-foreground'>
             <CardHeader>
               <CardTitle>Nearby Attractions</CardTitle>
@@ -81,7 +83,7 @@ export default function HostelDetailPage() {
               </ul>
             </CardContent>
           </Card>
-        )}
+        )} */ }
       </div>
     </div>
   );

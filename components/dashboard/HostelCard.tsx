@@ -6,7 +6,7 @@
   import OccupancyBar from './OccupancyBar';
 
   interface HostelCardProps {
-    id: string;
+    _id: string;
     name: string;
     currentOccupancy: number;
     capacity: number;
@@ -29,7 +29,7 @@
   };
 
   const HostelCard: React.FC<HostelCardProps> = ({
-    id,
+    _id,
     name,
     currentOccupancy,
     capacity,
@@ -38,7 +38,7 @@
     const router = useRouter();
 
     const handleCardClick = () => {
-      router.push(`/dashboard/hostels/${id}`); // Navigate to the hostel details page
+      router.push(`/dashboard/hostels/${_id}`); // Navigate to the hostel details page
     };
 
     return (
