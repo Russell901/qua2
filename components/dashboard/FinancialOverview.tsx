@@ -9,13 +9,19 @@ type OverviewCardProps = {
 
 function OverviewCard({ title, amount, icon }: OverviewCardProps) {
   return (
-    <Card className=" border-none text-foreground">
+    <Card className="border-none text-foreground">
       <CardHeader className="flex justify-between pb-2">
         <CardTitle className="text-sm">{title}</CardTitle>
         {icon}
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">MWK&nbsp;{amount.toFixed(2)}</div>
+        <div className="text-2xl font-bold">
+          {amount >= 100000
+            ? `MWK ${(amount / 1000000).toFixed(1)}M`
+            : amount >= 100000
+            ? `MWK ${(amount / 1000).toFixed(1)}K`
+            : amount.toLocaleString("en-US", { style: "currency", currency: "MWK" })}
+        </div>
       </CardContent>
     </Card>
   );
